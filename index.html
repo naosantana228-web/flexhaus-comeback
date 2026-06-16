@@ -91,8 +91,26 @@
   .hint{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:2;color:var(--muted);font-size:.75rem;letter-spacing:2px;text-transform:uppercase;animation:bob 1.8s ease-in-out infinite}
   @keyframes bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,6px)}}
 
+  /* data / diagnosis section */
+  .data .wrap{max-width:1000px}
+  .data .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin:24px 0 30px}
+  .kpi{background:rgba(22,27,34,.75);backdrop-filter:blur(4px);border:1px solid var(--line);border-radius:14px;padding:20px 18px}
+  .kpi .num{font-family:Anton;font-size:clamp(2rem,5vw,3rem);color:var(--volt);line-height:1}
+  .kpi .lab{color:var(--muted);font-size:.85rem;margin-top:8px}
+  table.cliff{width:100%;border-collapse:collapse;background:rgba(22,27,34,.6);border-radius:12px;overflow:hidden;font-size:.95rem;margin-top:6px}
+  table.cliff th,table.cliff td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--line)}
+  table.cliff th{color:var(--volt);text-transform:uppercase;letter-spacing:1px;font-size:.72rem;font-family:Inter}
+  table.cliff tr:last-child td{border-bottom:none}
+  table.cliff .hot{color:var(--ember);font-weight:700}
+  .src{color:var(--muted);font-size:.8rem;margin-top:14px}
+  /* transparency / catch section */
+  .catch .wrap{max-width:780px}
+  .catchbox{background:rgba(22,27,34,.78);backdrop-filter:blur(4px);border:1px solid var(--line);border-left:3px solid var(--ember);border-radius:14px;padding:24px;margin-top:18px}
+  .catchbox .lie{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--ember);margin:10px 0}
+  .catchbox .fix{color:var(--chalk);margin-top:6px}
+  .catchbox .fix b{color:var(--volt)}
   @media (prefers-reduced-motion: reduce){ .hint{animation:none} html{scroll-behavior:auto} }
-  @media(max-width:600px){ .scene{padding:12vh 7vw} }
+  @media(max-width:600px){ .scene{padding:12vh 7vw} table.cliff{font-size:.82rem} table.cliff th,table.cliff td{padding:8px 9px} }
 </style>
 </head>
 <body>
@@ -136,6 +154,39 @@
       <div class="stat">Skip the second class, and you're about <span class="volt">2&times;</span> more likely to quit.
         <small>Computed from FlexHaus's own 18-month booking data (1,556 members). The comeback class is the one that changes the odds.</small>
       </div>
+    </div>
+  </section>
+
+  <!-- SCENE 3b: THE DATA / DIAGNOSIS (from flexhaus_bookings.csv) -->
+  <section class="scene data">
+    <div class="wrap">
+      <div class="eyebrow">What the data told us</div>
+      <div class="big" style="font-size:clamp(1.8rem,5vw,3rem)">We read 18 months of<br>FlexHaus's own bookings.</div>
+      <div class="grid">
+        <div class="kpi"><div class="num">45,349</div><div class="lab">booking rows analysed</div></div>
+        <div class="kpi"><div class="num">1,556</div><div class="lab">members rebuilt (group by member_id)</div></div>
+        <div class="kpi"><div class="num">637</div><div class="lab">currently active</div></div>
+        <div class="kpi"><div class="num">42%</div><div class="lab">never book a 2nd class</div></div>
+      </div>
+
+      <div class="eyebrow" style="margin-top:8px">The second-class cliff</div>
+      <table class="cliff">
+        <thead><tr><th>Lifetime classes</th><th>Members</th><th>Cancelled to date</th></tr></thead>
+        <tbody>
+          <tr><td>1 — one &amp; done</td><td>655 (42%)</td><td class="hot">75.3%</td></tr>
+          <tr><td>2&ndash;4 — sporadic</td><td>138 (9%)</td><td>73.9%</td></tr>
+          <tr><td>5&ndash;20 — regular</td><td>315 (20%)</td><td>58.1%</td></tr>
+          <tr><td>20+ — devotee</td><td>448 (29%)</td><td>24.1%</td></tr>
+        </tbody>
+      </table>
+
+      <div class="grid" style="margin-top:24px">
+        <div class="kpi"><div class="num">1.97&times;</div><div class="lab">churn lift: skip 2nd class (75.3%) vs 5+ classes (38.1%)</div></div>
+        <div class="kpi"><div class="num">185</div><div class="lab">at-risk members: active but disengaged</div></div>
+        <div class="kpi"><div class="num">&euro;100,620</div><div class="lab">/ year at stake (185 &times; fee &times; 12)</div></div>
+        <div class="kpi"><div class="num">71%</div><div class="lab">come back if they <em>attend</em> class 1 (vs 34% if they no-show)</div></div>
+      </div>
+      <p class="src">Every figure computed from <code>flexhaus_bookings.csv</code> (Dec 2024 &ndash; May 2026). At-risk rule: active AND (&le;1 booking OR no 2nd class OR no visit in 30+ days). The one metric this campaign moves: <span class="volt">attended comeback classes from the at-risk cohort.</span></p>
     </div>
   </section>
 
@@ -195,6 +246,21 @@
           <div class="deet" id="okDetail">Strength · Tue 11:00</div>
           <p style="margin-top:16px"><a href="#top">← back to top</a></p>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCENE 5: TRANSPARENCY — catch the octopus lying -->
+  <section class="scene catch">
+    <div class="wrap">
+      <div class="eyebrow">Built honestly &middot; what our verifier caught</div>
+      <div class="big" style="font-size:clamp(1.6rem,4.5vw,2.6rem)">We caught the AI<br>making a number up.</div>
+      <div class="catchbox">
+        <p style="color:var(--muted)">A draft of our win-back copy tried to use two stats that <strong>do not exist</strong> in the FlexHaus data:</p>
+        <p class="lie">“You’ve missed 6 classes this month.”</p>
+        <p class="lie">“Join 200+ members who came back.”</p>
+        <p class="fix">The CSV has no “classes missed this month” field and no prior win-back campaign — so both were <b>hallucinated</b>, and the guilt-stat broke our no-shame rule. A cold verifier flagged them and we deleted them.</p>
+        <p class="fix" style="margin-top:12px">The only number we kept is the one we could actually compute: <b>skip the second class and you’re ~2&times; more likely to quit (1.97&times;)</b> — straight from <code>flexhaus_bookings.csv</code>.</p>
       </div>
     </div>
   </section>
