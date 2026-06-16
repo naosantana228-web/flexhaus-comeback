@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Your spot's still here — FlexHaus Comeback</title>
+<meta name="description" content="Book your comeback class at FlexHaus. We saved you a spot." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --carbon:#0E1116; --chalk:#F5F5F2; --volt:#C6F24E; --ember:#FF5A3C;
+    --muted:#9aa3ad; --line:#262b33; --card:#161b22;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--carbon);color:var(--chalk);font-family:Inter,system-ui,sans-serif;line-height:1.55;overflow-x:hidden}
+  h1,h2,.big{font-family:Anton,Impact,sans-serif;font-weight:400;letter-spacing:.5px;line-height:.98;text-transform:uppercase}
+  .volt{color:var(--volt)} .ember{color:var(--ember)}
+  a{color:var(--volt)}
+
+  /* fixed WebGL canvas behind content */
+  #bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block}
+  .content{position:relative;z-index:1}
+
+  .scene{min-height:100vh;display:flex;align-items:center;padding:8vh 6vw;}
+  .wrap{max-width:980px;margin:0 auto;width:100%}
+
+  .eyebrow{color:var(--volt);text-transform:uppercase;letter-spacing:3px;font-size:.78rem;font-weight:700;margin-bottom:18px}
+  .hero h1{font-size:clamp(3rem,11vw,7rem)}
+  .hero p.lead{font-size:clamp(1.05rem,2.6vw,1.4rem);color:var(--chalk);max-width:30ch;margin:22px 0 30px}
+  .cta{display:inline-block;background:var(--volt);color:#101400;font-weight:700;font-family:Inter;
+       padding:16px 28px;border-radius:999px;text-decoration:none;font-size:1.05rem;border:none;cursor:pointer;transition:transform .15s, box-shadow .15s}
+  .cta:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(198,242,78,.25)}
+  .cta:focus-visible{outline:3px solid var(--chalk);outline-offset:3px}
+
+  .scene2 .wrap{max-width:760px}
+  .scene2 .big{font-size:clamp(2rem,6vw,3.6rem)}
+  .scene2 p{color:var(--muted);font-size:1.15rem;margin-top:18px;max-width:46ch}
+
+  /* proof beats */
+  .beats{display:grid;gap:18px;max-width:620px}
+  .beat{background:rgba(22,27,34,.72);backdrop-filter:blur(4px);border:1px solid var(--line);border-left:3px solid var(--volt);
+        border-radius:12px;padding:18px 20px}
+  .beat h3{font-family:Inter;font-size:1.1rem;margin-bottom:4px}
+  .beat span{color:var(--muted);font-size:.95rem}
+  .stat{margin-top:26px;font-family:Anton;font-size:clamp(1.6rem,5vw,2.6rem);color:var(--chalk)}
+  .stat small{display:block;font-family:Inter;font-size:.8rem;color:var(--muted);letter-spacing:.4px;margin-top:8px;text-transform:none}
+
+  /* comeback card */
+  .scene4{flex-direction:column;justify-content:center}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:20px;max-width:460px;width:100%;margin:0 auto;
+        padding:30px 26px;box-shadow:0 0 0 1px rgba(198,242,78,.12), 0 30px 80px rgba(0,0,0,.6)}
+  .card .tag{color:var(--volt);text-transform:uppercase;letter-spacing:2px;font-size:.72rem;font-weight:700}
+  .card h2{font-size:2rem;margin:6px 0 4px}
+  .card .saved{color:var(--ember);font-weight:600;margin-bottom:18px}
+  .preselect{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap}
+  .pill{background:#1d232c;border:1px solid var(--line);border-radius:10px;padding:10px 14px;flex:1;min-width:130px}
+  .pill .k{font-size:.68rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted)}
+  .pill .v{font-weight:700;font-size:1.05rem;margin-top:2px}
+  label{display:block;font-size:.85rem;font-weight:600;margin:0 0 6px}
+  select,input[type=text],input[type=email]{
+    width:100%;background:#0c1014;border:1.5px solid var(--line);color:var(--chalk);border-radius:10px;
+    padding:12px 14px;font-size:1rem;font-family:Inter;margin-bottom:14px}
+  select:focus,input:focus{outline:none;border-color:var(--volt);box-shadow:0 0 0 3px rgba(198,242,78,.22)}
+  .consent{display:flex;gap:10px;align-items:flex-start;font-size:.82rem;color:var(--muted);margin-bottom:16px}
+  .consent input{margin-top:4px;width:16px;height:16px;flex:none;accent-color:var(--volt)}
+  .consent a{color:var(--volt)}
+  .err{display:none;color:var(--ember);font-size:.8rem;margin:-8px 0 12px}
+  .field-bad input,.field-bad select{border-color:var(--ember)}
+  .field-bad .err{display:block}
+  .cta.full{width:100%;text-align:center}
+  .optout{font-size:.74rem;color:var(--muted);text-align:center;margin-top:14px}
+
+  /* success */
+  .success{display:none;text-align:center;padding:8px 4px}
+  .success .ring{width:84px;height:84px;border-radius:50%;background:var(--volt);color:#101400;display:flex;align-items:center;justify-content:center;font-size:2.4rem;margin:0 auto 18px;font-weight:700}
+  .success h2{font-size:2rem}
+  .success p{color:var(--muted);margin-top:8px}
+  .success .deet{margin-top:18px;background:#1d232c;border-radius:12px;padding:16px;color:var(--chalk)}
+
+  header.bar{position:fixed;top:0;left:0;right:0;z-index:3;display:flex;justify-content:space-between;align-items:center;
+             padding:16px 6vw;font-weight:800;letter-spacing:1px;mix-blend-mode:difference}
+  header .logo{font-family:Anton;font-size:1.3rem;letter-spacing:2px}
+  header a.mini{font-size:.8rem;background:var(--volt);color:#101400;padding:8px 14px;border-radius:999px;text-decoration:none;font-weight:700}
+
+  footer{position:relative;z-index:1;text-align:center;padding:40px 6vw;color:var(--muted);font-size:.82rem;border-top:1px solid var(--line)}
+
+  /* scroll hint */
+  .hint{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:2;color:var(--muted);font-size:.75rem;letter-spacing:2px;text-transform:uppercase;animation:bob 1.8s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,6px)}}
+
+  @media (prefers-reduced-motion: reduce){ .hint{animation:none} html{scroll-behavior:auto} }
+  @media(max-width:600px){ .scene{padding:12vh 7vw} }
+</style>
+</head>
+<body>
+
+<canvas id="bg" aria-hidden="true"></canvas>
+
+<header class="bar">
+  <div class="logo">FLEXHAUS</div>
+  <a class="mini" href="#book">Book your comeback</a>
+</header>
+
+<main class="content">
+
+  <!-- SCENE 1: hero / resting pulse -->
+  <section class="scene hero" id="top">
+    <div class="wrap">
+      <div class="eyebrow">The Comeback · we saved you a spot</div>
+      <h1>Your spot's<br><span class="volt">still here.</span></h1>
+      <p class="lead">No lecture. No "where have you been." Just one easy class to get the rhythm back.</p>
+      <a class="cta" href="#book">Book your comeback class →</a>
+    </div>
+  </section>
+
+  <!-- SCENE 2: momentum builds -->
+  <section class="scene scene2">
+    <div class="wrap">
+      <div class="big">It was never about<br>starting over.</div>
+      <p>You're not back to zero. The hard part — joining — is already done. This is just the next class. The room's the same. The coffee's still good. The wall still says <em>show up for yourself</em>.</p>
+    </div>
+  </section>
+
+  <!-- SCENE 3: the proof -->
+  <section class="scene">
+    <div class="wrap">
+      <div class="eyebrow">Why now</div>
+      <div class="beats">
+        <div class="beat"><h3>One class restarts it</h3><span>You don't need a plan. You need a Tuesday.</span></div>
+        <div class="beat"><h3>Your favourite's on the timetable</h3><span>We pre-picked it, in a quiet off-peak slot. No waitlist, no crowd.</span></div>
+        <div class="beat"><h3>We held the spot</h3><span>It's reserved under your name. One tap and it's yours.</span></div>
+      </div>
+      <div class="stat">Skip the second class, and you're about <span class="volt">2&times;</span> more likely to quit.
+        <small>Computed from FlexHaus's own 18-month booking data (1,556 members). The comeback class is the one that changes the odds.</small>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCENE 4: the comeback card -->
+  <section class="scene scene4" id="book">
+    <div class="wrap">
+      <div class="card" id="card">
+        <!-- FORM -->
+        <form id="bookingForm" novalidate>
+          <div class="tag">Your comeback class</div>
+          <h2>Booked in one tap.</h2>
+          <div class="saved">● We saved you a spot.</div>
+
+          <div class="preselect">
+            <div class="pill"><div class="k">Class</div><div class="v" id="pvClass">Strength</div></div>
+            <div class="pill"><div class="k">Slot</div><div class="v" id="pvSlot">Tue 11:00 · off-peak</div></div>
+          </div>
+
+          <label for="cls">Prefer a different class?</label>
+          <select id="cls" name="cls" aria-label="Choose your comeback class">
+            <option>Strength</option><option>HIIT</option><option>Boxing</option>
+            <option>Spin</option><option>Yoga</option><option>Pilates</option><option>Mobility</option>
+          </select>
+
+          <label for="slot">Pick a slot that's easy</label>
+          <select id="slot" name="slot" aria-label="Choose a time slot">
+            <option>Tue 11:00 · off-peak</option>
+            <option>Wed 14:00 · off-peak</option>
+            <option>Thu 11:30 · off-peak</option>
+            <option>Sat 09:00 · weekend</option>
+            <option>Mon 18:00 · peak</option>
+          </select>
+
+          <label for="name">Your name</label>
+          <input type="text" id="name" name="name" placeholder="First name" autocomplete="given-name" />
+          <div class="err" id="errName">Pop your name in so we can greet you at the door.</div>
+
+          <label for="contact">Email or mobile</label>
+          <input type="text" id="contact" name="contact" placeholder="you@example.ie or 08x..." autocomplete="email" />
+          <div class="err" id="errContact">We need one way to send your confirmation.</div>
+
+          <div class="consent">
+            <input type="checkbox" id="consent" />
+            <label for="consent" style="font-weight:400;margin:0">Yes, send me my comeback confirmation and the odd class reminder. I can opt out anytime in one tap.</label>
+          </div>
+          <div class="err" id="errConsent" style="margin-top:-8px">Please tick this so we can send your confirmation.</div>
+
+          <button class="cta full" type="submit">Lock in my comeback →</button>
+          <div class="optout">No spam, ever. Unsubscribe in one click. FlexHaus · GDPR-friendly.</div>
+        </form>
+
+        <!-- SUCCESS -->
+        <div class="success" id="success" role="status" aria-live="polite">
+          <div class="ring">✓</div>
+          <h2>You're back in, <span id="okName">friend</span>.</h2>
+          <p>We've held your spot. Check your inbox/phone for the confirmation.</p>
+          <div class="deet" id="okDetail">Strength · Tue 11:00</div>
+          <p style="margin-top:16px"><a href="#top">← back to top</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  FlexHaus · single-location boutique gym · "Show up for yourself."<br>
+  Class-exercise prototype. Booking is captured locally for demo; wire to a free-tier form provider before launch. Stat computed from <code>flexhaus_bookings.csv</code>.
+</footer>
+
+<div class="hint" id="hint">Scroll ↓</div>
+
+<!-- No-WebGL / reduced-motion friendly: 3D is purely decorative and guarded -->
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }
+</script>
+<script type="module">
+  // ---------- FORM LOGIC (works with or without 3D) ----------
+  const form = document.getElementById('bookingForm');
+  const clsSel = document.getElementById('cls');
+  const slotSel = document.getElementById('slot');
+  const pvClass = document.getElementById('pvClass');
+  const pvSlot = document.getElementById('pvSlot');
+  clsSel.addEventListener('change', ()=> pvClass.textContent = clsSel.value);
+  slotSel.addEventListener('change', ()=> pvSlot.textContent = slotSel.value);
+
+  function bad(id,on){ document.getElementById(id).closest('label')?.parentElement; }
+  function setBad(wrapErrId, fieldEl, on){
+    fieldEl.parentElement; // noop
+  }
+  function mark(fieldId, errId, on){
+    const f = document.getElementById(fieldId);
+    const grp = f.closest('.card');
+    document.getElementById(errId).style.display = on ? 'block' : 'none';
+    f.style.borderColor = on ? 'var(--ember)' : '';
+  }
+  function validContact(v){
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || /^[0-9+()\s-]{7,}$/.test(v);
+  }
+
+  form.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const name = document.getElementById('name').value.trim();
+    const contact = document.getElementById('contact').value.trim();
+    const consent = document.getElementById('consent').checked;
+    let ok = true;
+    mark('name','errName', name.length===0); if(!name) ok=false;
+    mark('contact','errContact', !validContact(contact)); if(!validContact(contact)) ok=false;
+    mark('consent','errConsent', !consent); if(!consent) ok=false;
+    if(!ok) return;
+
+    const payload = { name, contact, class:clsSel.value, slot:slotSel.value, consent:true, ts:new Date().toISOString() };
+    console.log('[FlexHaus Comeback] booking captured (demo):', payload);
+
+    document.getElementById('okName').textContent = name;
+    document.getElementById('okDetail').textContent = clsSel.value + ' · ' + slotSel.value;
+    form.style.display='none';
+    document.getElementById('success').style.display='block';
+    window.__racePulse && window.__racePulse(); // trigger 3D finale if present
+  });
+
+  ['name','contact'].forEach(id=>document.getElementById(id)
+    .addEventListener('input',()=>mark(id, id==='name'?'errName':'errContact', false)));
+  document.getElementById('consent').addEventListener('change',()=>mark('consent','errConsent',false));
+
+  // ---------- 3D SCENE (guarded; decorative only) ----------
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const canvas = document.getElementById('bg');
+
+  // WebGL capability check -> graceful fallback (static gradient already in CSS body)
+  function hasWebGL(){
+    try{ const c=document.createElement('canvas');
+      return !!(window.WebGLRenderingContext && (c.getContext('webgl')||c.getContext('experimental-webgl')));
+    }catch(e){ return false; }
+  }
+
+  if(!hasWebGL() || reduceMotion){
+    // No 3D: paint a calm static radial backdrop so the page still feels designed.
+    canvas.style.background = 'radial-gradient(1200px 700px at 50% 12%, #18324a 0%, #0E1116 60%)';
+    document.getElementById('hint').textContent = 'Scroll ↓';
+  } else {
+    import('three').then((THREE)=>{
+      const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true, powerPreference:'high-performance'});
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+      renderer.setSize(innerWidth, innerHeight);
+      const scene = new THREE.Scene();
+      scene.fog = new THREE.FogExp2(0x0E1116, 0.06);
+      const camera = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 0.1, 100);
+      camera.position.set(0,0,6);
+
+      // --- heartbeat line: a tube of points across the dark ---
+      const N = 220;
+      const linePos = new Float32Array(N*3);
+      for(let i=0;i<N;i++){ linePos[i*3]= (i/N-0.5)*22; linePos[i*3+1]=0; linePos[i*3+2]=0; }
+      const lineGeo = new THREE.BufferGeometry();
+      lineGeo.setAttribute('position', new THREE.BufferAttribute(linePos,3));
+      const lineMat = new THREE.PointsMaterial({color:0xC6F24E, size:0.06, transparent:true, opacity:0.9});
+      const pulseLine = new THREE.Points(lineGeo, lineMat);
+      scene.add(pulseLine);
+
+      // --- chalk-dust GPU particle field ---
+      const M = 900;
+      const dust = new Float32Array(M*3);
+      for(let i=0;i<M;i++){ dust[i*3]=(Math.random()-0.5)*30; dust[i*3+1]=(Math.random()-0.5)*18; dust[i*3+2]=(Math.random()-0.5)*24-4; }
+      const dustGeo = new THREE.BufferGeometry();
+      dustGeo.setAttribute('position', new THREE.BufferAttribute(dust,3));
+      const dustMat = new THREE.PointsMaterial({color:0xF5F5F2, size:0.03, transparent:true, opacity:0.35});
+      const dustField = new THREE.Points(dustGeo, dustMat);
+      scene.add(dustField);
+
+      // Volt pool light (a soft glowing sprite at the "comeback" depth)
+      const glowMat = new THREE.PointsMaterial({color:0xC6F24E, size:2.2, transparent:true, opacity:0.0});
+      const glowGeo = new THREE.BufferGeometry();
+      glowGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array([0,-1,-6]),3));
+      const glow = new THREE.Points(glowGeo, glowMat);
+      scene.add(glow);
+
+      let scrollProg = 0;        // 0..1 down the page
+      let pulseSpeed = 0.5;
+      let raceBoost = 0;
+      const totalScroll = ()=> document.body.scrollHeight - innerHeight;
+      addEventListener('scroll', ()=>{ scrollProg = Math.min(1, scrollY/Math.max(1,totalScroll())); }, {passive:true});
+
+      window.__racePulse = ()=>{ raceBoost = 1; }; // finale: heartbeat races to full
+
+      const base = linePos.slice();
+      let t=0;
+      function tick(){
+        t += 0.016;
+        pulseSpeed = 0.5 + scrollProg*2.5 + raceBoost*4;
+        // animate a travelling pulse along the line as vertical displacement
+        const head = (t*pulseSpeed) % 1;
+        const arr = pulseLine.geometry.attributes.position.array;
+        for(let i=0;i<N;i++){
+          const u = i/N;
+          const d = Math.abs(u-head);
+          const spike = Math.exp(-(d*d)/0.0009) * (1.2+scrollProg*1.4);
+          arr[i*3+1] = base[i*3+1] + spike;
+        }
+        pulseLine.geometry.attributes.position.needsUpdate = true;
+        lineMat.opacity = 0.6 + scrollProg*0.4;
+
+        // camera moves forward + slightly down toward the volt pool as you scroll
+        camera.position.z = 6 - scrollProg*7.5;
+        camera.position.y = scrollProg*-0.8;
+        camera.lookAt(0, scrollProg*-0.8, -4);
+
+        // dust drift
+        dustField.rotation.y += 0.0006 + scrollProg*0.0015;
+        dustField.rotation.x += 0.0003;
+
+        // volt glow blooms as you reach the booking card
+        const near = Math.max(0, (scrollProg-0.7)/0.3);
+        glowMat.opacity = Math.min(0.8, near + raceBoost*0.6);
+
+        if(raceBoost>0) raceBoost = Math.max(0, raceBoost-0.01);
+        renderer.render(scene,camera);
+        requestAnimationFrame(tick);
+      }
+      tick();
+
+      addEventListener('resize', ()=>{
+        camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix();
+        renderer.setSize(innerWidth, innerHeight);
+      });
+    }).catch(()=>{
+      canvas.style.background = 'radial-gradient(1200px 700px at 50% 12%, #18324a 0%, #0E1116 60%)';
+    });
+  }
+
+  // hide scroll hint after first scroll
+  addEventListener('scroll', ()=>{ const h=document.getElementById('hint'); if(scrollY>40&&h) h.style.opacity='0'; }, {passive:true});
+</script>
+</body>
+</html>
